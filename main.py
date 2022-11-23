@@ -11,7 +11,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classifica
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.feature_selection import chi2
-
+from sklearn.model_selection import cross_val_score, cross_val_predict
 
 # simple function to find outliers for a feature using tukey method
 # @param x: a  column of data from the dataset
@@ -107,11 +107,23 @@ if __name__ == '__main__':
     teamIF_train_scale = scale.transform(teamIF_train)
     teamIF_test_scale = scale.transform(teamIF_test)
 
+    # cross validation
+    teamIF_train.shape, teamOF_train.shape
+    teamIF_test.shape, teamOF_test.shape
+
     # initialize svm with rbf kernel and fit it to the dataset
     our_svm = SVC()
     our_svm.fit(teamIF_train_scale, teamOF_train)
     pred = our_svm.predict(teamIF_test_scale)
 
+    #estimating accuracy, by computing the score 5 times
+    scores = cross_val_score(our_svm, teamIF, teamOF, cv=5)
+    predictions = cross_val_predict(our_svm, teamIF, teamOF, cv=5)
+
     # display results
     print(classification_report(teamOF_test, pred))
     print(our_svm.score(teamIF_test, teamOF_test))
+    
+    #cross accuracy and standard deviation results
+    print("score has %0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
+    print("predict has %0.2f accuracy with a standard deviation of %0.2f" % (predictions.mean(), predictions.std()))

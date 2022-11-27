@@ -10,8 +10,8 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.feature_selection import chi2
 from sklearn.model_selection import cross_val_score, cross_val_predict
+
 
 # simple function to find outliers for a feature using tukey method
 # @param x: a  column of data from the dataset
@@ -98,6 +98,16 @@ if __name__ == '__main__':
     scale.fit(gswIF_train)
     gswIF_train_scale = scale.transform(gswIF_train)
     gswIF_test_scale = scale.transform(gswIF_test)
+
+    league = clean_team(df)
+    leagueIF = g.drop(['WL_HOME', 'GAME_ID', 'GAME_DATE', 'TEAM_ABBREVIATION_HOME.1', 'TEAM_ABBREVIATION_HOME',
+                       'TEAM_ABBREVIATION_AWAY'], axis=1)
+    leagueOF = g.WL_HOME
+    leagueIF_train, leagueIF_test, leagueOF_train, leagueOF_test = train_test_split(leagueIF, leagueOF, test_size=.25)
+    scale = MinMaxScaler()
+    scale.fit(leagueIF_train)
+    leagueIF_train_scale = scale.transform(leagueIF_train)
+    leagueIF_test_scale = scale.transform(leagueIF_test)
     # end of gsw test
 
     # split into test and training set and scale using minmax
@@ -116,14 +126,14 @@ if __name__ == '__main__':
     our_svm.fit(teamIF_train_scale, teamOF_train)
     pred = our_svm.predict(teamIF_test_scale)
 
-    #estimating accuracy, by computing the score 5 times
+    # estimating accuracy, by computing the score 5 times
     scores = cross_val_score(our_svm, teamIF, teamOF, cv=5)
     predictions = cross_val_predict(our_svm, teamIF, teamOF, cv=5)
 
     # display results
     print(classification_report(teamOF_test, pred))
     print(our_svm.score(teamIF_test, teamOF_test))
-    
-    #cross accuracy and standard deviation results
+
+    # cross accuracy and standard deviation results
     print("score has %0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
     print("predict has %0.2f accuracy with a standard deviation of %0.2f" % (predictions.mean(), predictions.std()))

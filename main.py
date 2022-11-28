@@ -100,9 +100,9 @@ if __name__ == '__main__':
     gswIF_test_scale = scale.transform(gswIF_test)
 
     league = clean_team(df)
-    leagueIF = g.drop(['WL_HOME', 'GAME_ID', 'GAME_DATE', 'TEAM_ABBREVIATION_HOME.1', 'TEAM_ABBREVIATION_HOME',
-                       'TEAM_ABBREVIATION_AWAY'], axis=1)
-    leagueOF = g.WL_HOME
+    leagueIF = league.drop(['WL_HOME', 'GAME_ID', 'GAME_DATE', 'TEAM_ABBREVIATION_HOME.1', 'TEAM_ABBREVIATION_HOME',
+                            'TEAM_ABBREVIATION_AWAY'], axis=1)
+    leagueOF = league.WL_HOME
     leagueIF_train, leagueIF_test, leagueOF_train, leagueOF_test = train_test_split(leagueIF, leagueOF, test_size=.25)
     scale = MinMaxScaler()
     scale.fit(leagueIF_train)

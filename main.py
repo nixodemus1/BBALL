@@ -4,7 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     # read in file, convert outcome to numeric and select a specific teams data.
     # Check that data for missing values
     # pass data to cleaning function and outlier removal then split the clean data into an input set and an output set
-    df = pd.read_csv('Final_dataset.csv')
+    df = pd.read_csv('data/Final_dataset.csv')
     df['WL_HOME'] = [0 if x == 'L' else 1 for x in df['WL_HOME']]
     x = pull_team("MIN", df)
     x = clean_team(x)
@@ -122,13 +122,12 @@ if __name__ == '__main__':
     teamIF_test.shape, teamOF_test.shape
 
     # initialize svm with rbf kernel and fit it to the dataset
-    our_svm = SVC()
+    our_svm = SVC(C=1.0,kernel='rbf',gamma='scale')
     our_svm.fit(teamIF_train_scale, teamOF_train)
     pred = our_svm.predict(teamIF_test_scale)
 
     # estimating accuracy, by computing the score 5 times
     scores = cross_val_score(our_svm, teamIF, teamOF, cv=5)
-    predictions = cross_val_predict(our_svm, teamIF, teamOF, cv=5)
 
     # display results
     print(classification_report(teamOF_test, pred))
@@ -136,4 +135,4 @@ if __name__ == '__main__':
 
     # cross accuracy and standard deviation results
     print("score has %0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
-    print("predict has %0.2f accuracy with a standard deviation of %0.2f" % (predictions.mean(), predictions.std()))
+    

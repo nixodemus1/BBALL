@@ -125,6 +125,17 @@ if __name__ == '__main__':
     our_svm = SVC(C=1.0,kernel='rbf',gamma='scale')
     our_svm.fit(teamIF_train_scale, teamOF_train)
     pred = our_svm.predict(teamIF_test_scale)
+    #get the confidence of each prediction and then standardize it into a percentage
+    confidence = our_svm.decision_function(teamIF_test_scale)
+    max_pred = 0
+    percent = np.array([])
+    if np.max(confidence) < abs(np.min(confidence)):
+        max_pred = abs(np.min(confidence))
+    else:
+        max_pred = np.max(confidence)
+    for i in confidence:
+        per = (i/max_pred)*100
+        percent = np.append(percent, per)
 
     # estimating accuracy, by computing the score 5 times
     scores = cross_val_score(our_svm, teamIF, teamOF, cv=5)
@@ -135,4 +146,6 @@ if __name__ == '__main__':
 
     # cross accuracy and standard deviation results
     print("score has %0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
-    
+    data = {'predicted result': pred, 'actual result': teamOF_test, 'confidence in prediction': percent}
+    results = pd.DataFrame(data)
+    print(results)

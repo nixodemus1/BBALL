@@ -125,6 +125,19 @@ if __name__ == '__main__':
     our_svm = SVC(C=1.0,kernel='rbf',gamma='scale')
     our_svm.fit(teamIF_train_scale, teamOF_train)
     pred = our_svm.predict(teamIF_test_scale)
+
+    #plot the model
+    loss_train = history['train_loss']
+    loss_val = history['val_loss']
+    epochs = range(1,35)
+    plt.plot(epochs, loss_train, 'g', label='Training loss')
+    plt.plot(epochs, loss_val, 'b', label='validation loss')
+    plt.title('Training and Validation loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
+
     #get the confidence of each prediction and then standardize it into a percentage
     confidence = our_svm.decision_function(teamIF_test_scale)
     max_pred = 0

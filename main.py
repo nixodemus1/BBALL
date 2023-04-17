@@ -4,7 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as pyplot
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     # read in file, convert outcome to numeric and select a specific teams data.
     # Check that data for missing values
     # pass data to cleaning function and outlier removal then split the clean data into an input set and an output set
-    df = pd.read_csv('data/Final_dataset.csv')
+    df = pd.read_csv('Final_dataset.csv')
     df['WL_HOME'] = [0 if x == 'L' else 1 for x in df['WL_HOME']]
     x = pull_team("MIN", df)
     x = clean_team(x)
